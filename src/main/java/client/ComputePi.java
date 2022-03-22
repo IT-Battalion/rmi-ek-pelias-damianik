@@ -38,6 +38,7 @@ import compute.Compute;
 
 public class ComputePi {
     public static void main(String args[]) {
+        System.setProperty("java.security.policy", "./security.policy");
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
