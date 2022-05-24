@@ -7,14 +7,12 @@ task engine(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'engine.ComputeEngine'
     standardInput = System.in
-    args "localhost"
 }
 
 // e.g.: gradle compute --args="localhost 1234"
 task compute(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'client.ComputePi'
-    args "localhost", "20"
 }
 
 task balance(type: JavaExec) {
