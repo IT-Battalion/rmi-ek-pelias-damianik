@@ -32,6 +32,9 @@
 package engine;
 
 import java.io.*;
+import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -55,12 +58,14 @@ public class ComputeEngine implements Compute {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
+        String name = "Balance";
+        Registry registry = null;
+        Compute stub = null;
         try {
             Compute engine = new ComputeEngine();
-            Compute stub = (Compute)
+            stub = (Compute)
                             UnicastRemoteObject.exportObject(engine, 0);
-            String name = "Balance";
-            Registry registry = LocateRegistry.getRegistry(args[0]);
+            registry = LocateRegistry.getRegistry(args[0]);
             Balance balancer = (Balance) registry.lookup(name);
             balancer.register(stub);
             System.out.println("ComputeEngine bound");
@@ -73,6 +78,17 @@ public class ComputeEngine implements Compute {
         } catch (Exception e) {
             System.err.println("ComputeEngine exception:");
             e.printStackTrace();
+        } finally {
+            if (registry != null) {
+                try {
+                    registry.unbind(name);
+                } catch (RemoteException | NotBoundException ignored) {}
+            }
+            if (stub != null) {
+                try {
+                    UnicastRemoteObject.unexportObject(stub, false);
+                } catch (NoSuchObjectException ignored) {}
+            }
         }
     }
 }

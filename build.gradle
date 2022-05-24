@@ -18,6 +18,7 @@ task compute(type: JavaExec) {
 task balance(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'loadbalancer.LoadBalancer'
+    standardInput = System.in
 }
 
 dependencies {
