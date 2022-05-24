@@ -40,12 +40,12 @@ public class LoadBalancer implements Balance, Compute {
 	}
 
 	@Override
-	public synchronized void registerNode(Compute compute) throws RemoteException {
+	public synchronized void register(Compute compute) throws RemoteException {
 		nodes.add(compute);
 	}
 
 	@Override
-	public synchronized void unregisterNode(Compute compute) throws RemoteException {
+	public synchronized void unregister(Compute compute) throws RemoteException {
 		nodes.remove(compute);
 	}
 

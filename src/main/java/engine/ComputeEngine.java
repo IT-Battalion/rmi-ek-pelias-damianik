@@ -32,12 +32,9 @@
 package engine;
 
 import java.io.*;
-import java.nio.Buffer;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Scanner;
-import java.util.stream.Stream;
 
 import balance.Balance;
 import compute.Compute;
@@ -65,13 +62,13 @@ public class ComputeEngine implements Compute {
             String name = "Balance";
             Registry registry = LocateRegistry.getRegistry(args[0]);
             Balance balancer = (Balance) registry.lookup(name);
-            balancer.registerNode(stub);
+            balancer.register(stub);
             System.out.println("ComputeEngine bound");
 
             try (BufferedInputStream inputStream = new BufferedInputStream(System.in)) {
                 inputStream.read();
             } finally {
-                balancer.unregisterNode(stub);
+                balancer.unregister(stub);
             }
         } catch (Exception e) {
             System.err.println("ComputeEngine exception:");
