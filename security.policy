@@ -1,3 +1,4 @@
+// grants all permissions for the directory in which the java command has been called (${user.dir})
 grant codeBase "file://${user.dir}/-" {
         permission java.security.AllPermission;
 };
