@@ -15,6 +15,11 @@ task compute(type: JavaExec) {
     main = 'client.ComputePi'
 }
 
+task computeFibonacci(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'client.ComputeFibonacci'
+}
+
 task balance(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'loadbalancer.LoadBalancer'
