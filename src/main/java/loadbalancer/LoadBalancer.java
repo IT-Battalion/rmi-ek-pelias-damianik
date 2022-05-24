@@ -27,14 +27,14 @@ public class LoadBalancer implements Balance, Compute {
 
 	@Override
 	public <T> T executeTask(Task<T> t) throws RemoteException, ServiceUnavailableException {
-		do {
+		while (nodes.size() > 0) {
 			Compute node = method.balance(nodes);
 			try {
 				return node.executeTask(t);
 			} catch (RemoteException ex) {
 				nodes.remove(node);
 			}
-		} while (nodes.size() > 0);
+		}
 
 		throw new ServiceUnavailableException();
 	}
