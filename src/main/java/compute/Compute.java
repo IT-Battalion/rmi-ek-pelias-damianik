@@ -31,10 +31,12 @@
 
 package compute;
 
+import balance.BalanceItem;
+
 import javax.naming.ServiceUnavailableException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Compute extends Remote {
+public interface Compute extends Remote, BalanceItem {
     <T> T executeTask(Task<T> t) throws RemoteException, ServiceUnavailableException;
 }

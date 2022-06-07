@@ -40,17 +40,27 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import balance.Balance;
+import balance.BalanceItem;
 import compute.Compute;
 import compute.Task;
 
-public class ComputeEngine implements Compute {
+public class ComputeEngine implements Compute, BalanceItem {
+    private int activeConnections;
 
     public ComputeEngine() {
         super();
     }
 
     public <T> T executeTask(Task<T> t) {
-        return t.execute();
+        this.activeConnections++;
+        T result = t.execute();
+        this.activeConnections--;
+        return result;
+    }
+
+    @Override
+    public int getWeight() {
+        return activeConnections;
     }
 
     public static void main(String[] args) {

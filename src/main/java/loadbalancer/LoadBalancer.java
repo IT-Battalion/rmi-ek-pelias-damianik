@@ -1,6 +1,7 @@
 package loadbalancer;
 
 import balance.Balance;
+import balance.BalanceItem;
 import balance.BalanceMethod;
 import balance.RoundRobinMethod;
 import compute.Compute;
@@ -87,5 +88,13 @@ public class LoadBalancer implements Balance, Compute {
 				} catch (NoSuchObjectException ignored) {}
 			}
 		}
+	}
+
+	@Override
+	public int getWeight() {
+		return nodes.parallelStream()
+				.map(BalanceItem::getWeight)
+				.mapToInt(Integer::intValue)
+				.sum();
 	}
 }

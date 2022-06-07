@@ -3,7 +3,7 @@ package balance;
 import javax.naming.ServiceUnavailableException;
 import java.util.List;
 
-public class RoundRobinMethod<T> implements BalanceMethod<T> {
+public class RoundRobinMethod<T extends BalanceItem> implements BalanceMethod<T> {
 	private int lastNode;
 
 	public RoundRobinMethod() {
