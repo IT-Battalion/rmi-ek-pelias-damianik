@@ -27,11 +27,12 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package engine;
 
 import java.io.*;
+import java.rmi.AccessException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -43,6 +44,8 @@ import balance.Balance;
 import balance.BalanceItem;
 import compute.Compute;
 import compute.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ComputeEngine implements Compute, BalanceItem {
     private int activeConnections;
@@ -63,7 +66,10 @@ public class ComputeEngine implements Compute, BalanceItem {
         return activeConnections;
     }
 
+    private static Logger log = LoggerFactory.getLogger(ComputeEngine.class);
+
     public static void main(String[] args) {
+        log.info("Starting Compute Engine");
         System.setProperty("java.security.policy", "./security.policy");
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
@@ -74,30 +80,38 @@ public class ComputeEngine implements Compute, BalanceItem {
         try {
             Compute engine = new ComputeEngine();
             stub = (Compute)
-                            UnicastRemoteObject.exportObject(engine, 0);
+                    UnicastRemoteObject.exportObject(engine, 0);
+            log.info("Getting Registry for " + args[0]);
             registry = LocateRegistry.getRegistry(args[0]);
             Balance balancer = (Balance) registry.lookup(name);
             balancer.register(stub);
-            System.out.println("ComputeEngine bound");
+            log.info("ComputeEngine bound.");
 
             try (BufferedInputStream inputStream = new BufferedInputStream(System.in)) {
                 inputStream.read();
             } finally {
                 balancer.unregister(stub);
             }
-        } catch (Exception e) {
-            System.err.println("ComputeEngine exception:");
-            e.printStackTrace();
+        } catch (AccessException e) {
+            log.error("Operation is not permitted.");
+        } catch (NotBoundException e) {
+            log.error("The Name is currently not bound.");
+        } catch (RemoteException e) {
+            log.error("Registry Reference could not be created.");
+        } catch (IOException e) {
+            log.error("Reading Input failed", e);
         } finally {
             if (registry != null) {
                 try {
                     registry.unbind(name);
-                } catch (RemoteException | NotBoundException ignored) {}
+                } catch (RemoteException | NotBoundException ignored) {
+                }
             }
             if (stub != null) {
                 try {
                     UnicastRemoteObject.unexportObject(stub, false);
-                } catch (NoSuchObjectException ignored) {}
+                } catch (NoSuchObjectException ignored) {
+                }
             }
         }
     }

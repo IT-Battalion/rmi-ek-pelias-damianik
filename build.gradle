@@ -35,6 +35,8 @@ task balance(type: JavaExec) {
 
 dependencies {
     implementation 'com.google.guava:guava:23.0'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
     testImplementation 'junit:junit:4.12'
 }
 

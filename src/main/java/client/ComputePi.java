@@ -31,28 +31,44 @@
 
 package client;
 
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.math.BigDecimal;
 import compute.Compute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.ServiceUnavailableException;
 
 public class ComputePi {
+    private static Logger log = LoggerFactory.getLogger(ComputePi.class);
     public static void main(String args[]) {
+        log.info("Starting Compute Pi.");
         System.setProperty("java.security.policy", "./security.policy");
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
         try {
-        	// Hier ist was ganz wichtiges
             String name = "Compute";
+            log.info("Getting Registry for " + args[0]);
             Registry registry = LocateRegistry.getRegistry(args[0]);
             Compute comp = (Compute) registry.lookup(name);
+            log.info("Parsing Port: " + args[1]);
             Pi task = new Pi(Integer.parseInt(args[1]));
+            log.info("Executing Task");
             BigDecimal pi = comp.executeTask(task);
-            System.out.println(pi);
-        } catch (Exception e) {
-            System.err.println("ComputePi exception:");
-            e.printStackTrace();
+            log.info(String.valueOf(pi));
+        } catch (AccessException e) {
+            log.error("Operation is not permitted.");
+        } catch (NotBoundException e) {
+            log.error("The Name is currently not bound.");
+        } catch (RemoteException e) {
+            log.error("Registry Reference could not be created.");
+        } catch (ServiceUnavailableException e) {
+            log.error("Task could not be executed due unavailable service.");
         }
     }    
 }

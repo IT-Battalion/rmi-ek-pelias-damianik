@@ -27,33 +27,49 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 package client;
 
 import compute.Compute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.naming.ServiceUnavailableException;
 import java.math.BigInteger;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class ComputeFibonacci {
+    private static Logger log = LoggerFactory.getLogger(ComputeFibonacci.class);
+
     public static void main(String args[]) {
+        log.info("Starting Compute Pi.");
         System.setProperty("java.security.policy", "./security.policy");
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
         try {
-        	// Hier ist was ganz wichtiges
             String name = "Compute";
+            log.info("Getting Registry for " + args[0]);
             Registry registry = LocateRegistry.getRegistry(args[0]);
             Compute comp = (Compute) registry.lookup(name);
+            log.info("Parsing Port: " + args[1]);
             Fibonacci task = new Fibonacci(Integer.parseInt(args[1]));
-            BigInteger pi = comp.executeTask(task);
-            System.out.println(pi);
-        } catch (Exception e) {
-            System.err.println("ComputePi exception:");
-            e.printStackTrace();
+            log.info("Executing Task");
+            BigInteger fib = comp.executeTask(task);
+            log.info(String.valueOf(fib));
+        } catch (AccessException e) {
+            log.error("Operation is not permitted.");
+        } catch (NotBoundException e) {
+            log.error("The Name is currently not bound.");
+        } catch (RemoteException e) {
+            log.error("Registry Reference could not be created.");
+        } catch (ServiceUnavailableException e) {
+            log.error("Task could not be executed due unavailable service.");
         }
-    }    
+    }
 }
