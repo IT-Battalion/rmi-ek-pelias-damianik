@@ -25,8 +25,8 @@ task computeFibonacci(type: JavaExec) {
     main = 'client.ComputeFibonacci'
 }
 
-// e.g.: gradle balance
-// no arguments
+// e.g.: gradle balance --args="192.168.198.128"
+// the argument is <main rmi host>
 task balance(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'loadbalancer.LoadBalancer'
