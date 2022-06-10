@@ -55,9 +55,11 @@ public class ComputeEngine implements Compute, BalanceItem {
     }
 
     public <T> T executeTask(Task<T> t) {
+        log.debug("Started executing a task");
         this.activeConnections++;
         T result = t.execute();
         this.activeConnections--;
+        log.debug("Finished executing a task");
         return result;
     }
 
@@ -81,7 +83,7 @@ public class ComputeEngine implements Compute, BalanceItem {
             Compute engine = new ComputeEngine();
             stub = (Compute)
                     UnicastRemoteObject.exportObject(engine, 0);
-            log.info("Getting Registry for " + args[0]);
+            log.debug("Getting Registry for " + args[0]);
             registry = LocateRegistry.getRegistry(args[0]);
             Balance balancer = (Balance) registry.lookup(name);
             balancer.register(stub);

@@ -70,10 +70,10 @@ public class LoadBalancer implements Balance, Compute {
             Compute engine = new LoadBalancer();
             stub =
                     (Compute) UnicastRemoteObject.exportObject(engine, 0);
-            log.info("Creating Registry");
+            log.debug("Creating Registry");
             registry = LocateRegistry.createRegistry(1099);
 
-            log.info("Rebinding Compute and Balance");
+            log.debug("Rebinding Compute and Balance");
             registry.rebind("Compute", stub);
             registry.rebind("Balance", stub);
             log.info("LoadBalancer bound");

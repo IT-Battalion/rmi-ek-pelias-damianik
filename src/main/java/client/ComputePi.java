@@ -53,12 +53,12 @@ public class ComputePi {
         }
         try {
             String name = "Compute";
-            log.info("Getting Registry for " + args[0]);
+            log.debug("Getting Registry for " + args[0]);
             Registry registry = LocateRegistry.getRegistry(args[0]);
             Compute comp = (Compute) registry.lookup(name);
-            log.info("Parsing Port: " + args[1]);
+            log.debug("Parsing Port: " + args[1]);
             Pi task = new Pi(Integer.parseInt(args[1]));
-            log.info("Executing Task");
+            log.debug("Executing Task");
             BigDecimal pi = comp.executeTask(task);
             log.info(String.valueOf(pi));
         } catch (AccessException e) {
