@@ -55,6 +55,7 @@ public class LoadBalancer implements Balance, Compute {
 
 	public static void main(String[] args) {
 		System.setProperty("java.security.policy", "./security.policy");
+		System.setProperty("java.rmi.server.hostname", "192.168.198.128");
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
