@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+// e.g.: gradle engine --args="localhost"
+// the argument is <host of the rmi registry server>
 task engine(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'engine.ComputeEngine'
@@ -10,16 +12,21 @@ task engine(type: JavaExec) {
 }
 
 // e.g.: gradle compute --args="localhost 1234"
+// the arguments are <host of the rmi registry server> and <number of digits of pi to calculate>
 task compute(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'client.ComputePi'
 }
 
+// e.g.: gradle compute --args="localhost 1234"
+// the arguments are <host of the rmi registry server> and <index in the fibonacci sequence>
 task computeFibonacci(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'client.ComputeFibonacci'
 }
 
+// e.g.: gradle balance
+// no arguments
 task balance(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'loadbalancer.LoadBalancer'
