@@ -1,11 +1,12 @@
 package balance;
 
 import javax.naming.ServiceUnavailableException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class LeastWeightMethod<T extends BalanceItem> implements BalanceMethod<T> {
 	@Override
-	public T balance(List<T> nodes) throws ServiceUnavailableException {
+	public T balance(List<T> nodes) throws ServiceUnavailableException, RemoteException {
 		if (nodes.size() == 0) {
 			throw new ServiceUnavailableException();
 		}

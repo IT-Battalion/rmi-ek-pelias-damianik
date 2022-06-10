@@ -93,7 +93,11 @@ public class LoadBalancer implements Balance, Compute {
 	@Override
 	public int getWeight() {
 		return nodes.parallelStream()
-				.map(BalanceItem::getWeight)
+				.map((item) -> {
+					try {
+						return item.getWeight();
+					} catch (RemoteException e) {return 0;}
+				})
 				.mapToInt(Integer::intValue)
 				.sum();
 	}
